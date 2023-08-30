@@ -16,3 +16,7 @@ variable "num_subnets_public" {
 variable "backstage_server_public_key" {
   type = string
 }
+
+variable "backstage_server_private_key" {
+  type = string
+}

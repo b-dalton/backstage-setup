@@ -31,7 +31,7 @@ resource "aws_instance" "backstage" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = tls_private_key.ssh.private_key_pem
+    private_key = var.backstage_server_private_key
     host        = self.public_ip
   }
 }
