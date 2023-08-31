@@ -37,7 +37,7 @@ resource "aws_instance" "backstage" {
 }
 
 resource "aws_ebs_volume" "backstage" {
-  availability_zone = "us-west-2a"
+  availability_zone = "eu-west-2a"
   size              = 10
 }
 
