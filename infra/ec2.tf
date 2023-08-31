@@ -28,12 +28,6 @@ resource "aws_instance" "backstage" {
   key_name                    = aws_key_pair.server.key_name
   vpc_security_group_ids      = [aws_security_group.backstage.id]
   associate_public_ip_address = true
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    private_key = var.backstage_server_private_key
-    host        = self.public_ip
-  }
 }
 
 resource "aws_ebs_volume" "backstage" {
