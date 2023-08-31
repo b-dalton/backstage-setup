@@ -19,9 +19,9 @@ provider "aws" {
   region = var.region
   default_tags {
     tags = {
-      owner   = "Ben"
-      project = "backstage-setup"
-      name    = "backstage"
+      Owner   = "Ben"
+      Project = "backstage-setup"
+      Name    = "backstage"
     }
   }
 }

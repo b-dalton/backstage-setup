@@ -1,5 +1,5 @@
 resource "aws_key_pair" "server" {
-  key_name   = "key-${data.aws_default_tags.current.tags.name}"
+  key_name   = "key-${data.aws_default_tags.current.tags.Name}"
   public_key = var.backstage_server_public_key
 }
 
@@ -44,12 +44,12 @@ resource "aws_ebs_volume" "backstage" {
 resource "aws_volume_attachment" "backstage" {
   device_name = "/dev/sdh"
   volume_id   = aws_ebs_volume.backstage.id
-  instance_id = aws_instance.backstage.id
+  instance_id = aws_instance.backstage[0].id
 }
 
 resource "aws_security_group" "backstage" {
   vpc_id = aws_vpc.main.id
-  name   = "${data.aws_default_tags.current.tags.name}-sg"
+  name   = "${data.aws_default_tags.current.tags.Name}-sg"
 }
 
 resource "aws_security_group_rule" "allow_ssh_server" {

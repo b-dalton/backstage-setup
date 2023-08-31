@@ -1,5 +1,5 @@
 resource "aws_iam_role" "server" {
-  name = "server-${data.aws_default_tags.current.tags.name}"
+  name = "server-${data.aws_default_tags.current.tags.Name}"
 
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_instance_profile" "server" {
-  name = "server-${data.aws_default_tags.current.tags.name}"
+  name = "server-${data.aws_default_tags.current.tags.Name}"
   role = aws_iam_role.server.name
 }
 
@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "describe_instances" {
 }
 
 resource "aws_iam_role_policy" "describe_instances" {
-  name = "describe-instances-${data.aws_default_tags.current.tags.name}"
+  name = "describe-instances-${data.aws_default_tags.current.tags.Name}"
   role = aws_iam_role.server.id
 
   policy = data.aws_iam_policy_document.describe_instances.json
