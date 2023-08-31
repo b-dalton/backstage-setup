@@ -1,0 +1,13 @@
+---
+
+plugin: amazon.aws.aws_ec2
+profile: ben-dalton-vault-deployer
+regions:
+  - eu-west-2
+hostnames:
+  # All instances owned by me i.e. 'Project' = 'backstage-setup'
+  - tag:Project=backstage-setup
+compose:
+  # use a private address where a public one isn't assigned
+  ansible_host: public_ip_address|default(private_ip_address) # This ensures that the IP address gets used with the host
+
