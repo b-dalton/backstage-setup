@@ -1,0 +1,9 @@
+---
+
+- name: Ensure host is reachable
+  ansible.builtin.ping:
+
+- name: Check user
+  become: true
+  command:
+    cmd: whoami
