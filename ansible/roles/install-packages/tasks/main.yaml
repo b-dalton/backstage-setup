@@ -10,11 +10,84 @@
     state: present
 
 - name: Install nvm
-  shell: >
-    curl https://raw.githubusercontent.com/creationix/nvm/v0.7.0/install.sh | sh
-    creates=/home/{{ ansible_user_id }}/.nvm/nvm.sh
+  ansible.builtin.shell: >
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+  args:
+    creates: "/home/{{ ansible_user_id }}/.nvm/nvm.sh"
+  register: nvm_installed
 
-- name: Install node and set version
-  shell: >
-    /bin/bash -c "source ~/.nvm/nvm.sh && nvm install 0.10 && nvm alias default 0.10"
-    creates=/home/{{ ansible_user_id }}/.nvm/alias
+- name: Update apt repo and cache
+  become: true
+  ansible.builtin.apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+- name: Install nodejs and npm
+  become: true
+#  update_cache: yes
+  ansible.builtin.apt:
+    pkg:
+      - nodejs
+      - npm
+  register: nodejs_npm_installed
+
+- name: Install Yarn
+  become: true
+#  update_cache: yes
+  register: yarn_installed
+  ansible.builtin.shell: >
+    npm install --global yarn
+#    yarn set version 1.22.19 # automatically sets to this version
+  args:
+    executable: /bin/bash
+
+- name: Check yarn, nodejs, npm installed
+  ansible.builtin.debug:
+    msg: |
+        Output of nodejs and npm install {{ nodejs_npm_installed }}
+        Output of yarn install {{ yarn_installed }}
+
+- name: Docker - install packages to allow apt to use a repository over HTTPS
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - ca-certificates
+      - curl
+      - gnupg
+
+- name: Add Docker's GPG apt key
+  become: true
+  apt_key:
+    url: "{{item}}"
+    state: present
+  with_items:
+    - https://download.docker.com/linux/ubuntu/gpg
+    - https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+- name: Add the repository to Apt sources
+  become: true
+  apt_repository:
+    repo: "{{item}}"
+    state: present
+  with_items:
+    - deb https://download.docker.com/linux/ubuntu bionic stable
+    - deb https://deb.nodesource.com/node_18.x {{ ansible_distribution_release }} main
+    - deb https://apt.kubernetes.io/ kubernetes-xenial main
+
+- name: Install Docker
+  become: true
+  package:
+    name: docker-ce
+    state: present
+
+- name: Verify that the Docker Engine installation is successful
+  become: true
+  register: docker_engine_installed_successfully
+  ansible.builtin.shell: >
+    docker run hello-world
+  args:
+      executable: /bin/bash
+
+- name: Check docker engine installed successfully
+  ansible.builtin.debug:
+    msg: |
+      Output of docker engine install {{ docker_engine_installed_successfully }}
