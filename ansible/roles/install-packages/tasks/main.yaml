@@ -52,6 +52,15 @@
       - ca-certificates
       - curl
       - gnupg
+      - containerd.io
+      - docker-ce-cli
+
+- name: Install git
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - git-all
+  register: git_installed
 
 - name: Add Docker's GPG apt key
   become: true
