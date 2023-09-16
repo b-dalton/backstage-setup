@@ -1,0 +1,10 @@
+---
+
+- name: Create linux user
+  become: true
+  user: # Create a new Linux user
+    name: bkstg
+    comment: bkstg admin user
+    group: admin
+
+
